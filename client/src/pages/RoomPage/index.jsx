@@ -9,6 +9,33 @@ const RoomPage = () => {
     const [tool,setTool]=useState("pencil");
     const [color,setColor]=useState("black");
     const [elements,setElements]=useState([])
+    const [history,setHistory]=useState([]); // for undo and redo purposes
+
+
+
+    const undo = () => {
+        if (elements.length === 1) {
+          setHistory((prev) => [...prev, elements[elements.length - 1]]);
+          handleClearCanvas();
+        } else {
+          setElements((prev) => prev.slice(0, -1));
+          setHistory((prev) => [...prev, elements[elements.length - 1]]);
+        }
+      }
+
+      const redo=()=>{
+        setElements((prev)=>[...prev,history[history.length-1]]);
+        setHistory((prev)=>prev.slice(0,-1))
+      }
+
+
+    const handleClearCanvas=()=>{
+        const canvas=canvasRef.current;
+        const ctx=canvas.getContext("2d");
+        ctx.fillRect="white";
+        ctxRef.current.clearRect(0,0,canvasRef.current.width,canvasRef.current.height)
+        setElements([]);
+    }
 
   return (
       <div className="row">
@@ -49,17 +76,32 @@ const RoomPage = () => {
             </div>
 
              <div className="col-md-3 d-flex gap-2">
-                <button className="btn btn-primary mt-1">Undo</button>
-                <button className="btn btn-outline-primary mt-1">Redo</button>
+                <button 
+                disabled={elements.length==0}
+                className="btn btn-primary mt-1"
+                onClick={()=>undo()}
+                >Undo</button>
+                <button 
+                 disabled={history.length<1}
+                className="btn btn-outline-primary mt-1"
+                onClick={()=>redo()}
+                >Redo</button>
              </div>
 
              <div className="col-md-2">
-                <button className="btn btn-danger">Clear Canvas</button>
+                <button className="btn btn-danger" onClick={handleClearCanvas}>Clear Canvas</button>
              </div>
          </div>
 
         <div className="col-md-10 mx-auto mt-4 canvas-box">
-            <WhiteBoard canvasRef={canvasRef} ctxRef={ctxRef} elements={elements} setElements={setElements}></WhiteBoard>
+            <WhiteBoard
+             canvasRef={canvasRef} 
+             ctxRef={ctxRef} 
+             elements={elements} 
+             setElements={setElements} 
+             tool={tool}
+             color={color}
+            ></WhiteBoard>
         </div>
       </div>
   )
