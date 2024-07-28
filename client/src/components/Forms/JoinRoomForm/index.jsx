@@ -17,8 +17,8 @@ const JoinRoomForm=({socket,setUser})=>{
             name,
             roomId,
             userId:uuidv4(),
-            host:true,
-            presenter:true,
+            host:false, // joinee
+            presenter:false,
           }
           setUser(roomData);
           navigate(`/${roomId}`);

@@ -8,7 +8,7 @@ const CreateRoomForm=({socket,setUser})=>{
     const [roomId,setRoomId]=useState(uuidv4());
     const [name,setName]=useState("")
 
-    console.log('setUser:', setUser);
+    // console.log('setUser:', setUser);
     const navigate=useNavigate();
 
     const handleCreateRoom=(e)=>{

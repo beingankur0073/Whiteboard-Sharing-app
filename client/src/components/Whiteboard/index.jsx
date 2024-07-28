@@ -1,12 +1,29 @@
 import React, { useEffect, useLayoutEffect, useState } from 'react'
 import rough from 'roughjs'
+import { Socket } from 'socket.io-client';
 
 
 const roughGenerator=rough.generator(); // for shapes
 
-const WhiteBoard = ({canvasRef,ctxRef,elements,setElements,tool,color}) => {
+const WhiteBoard = ({canvasRef,ctxRef,elements,setElements,tool,color,user,socket}) => {
+   const [isDrawing,setIsDrawing]=useState(false);
+   const [img,setImg]=useState(null)
 
-    const [isDrawing,setIsDrawing]=useState(false);
+   useEffect(()=>{
+      console.log("wb check",socket)
+      socket.on("whiteBoardDataResponse",(data)=>{
+         setImg(data.imgURL);
+      })
+   },[])
+   // if not presenter then render the image
+   if(!user?.presenter){
+      return (
+         <div className='border border-dark border-3 h-100 w-100 overflow-hidden'>
+            <img src={img} alt="Realtime white board image shared by presenter" className='w-100 h-100'/>
+         </div>
+      )
+   }
+
 
     useEffect(()=>{
         const canvas=canvasRef.current;
@@ -25,6 +42,7 @@ const WhiteBoard = ({canvasRef,ctxRef,elements,setElements,tool,color}) => {
     useEffect(()=>{
       ctxRef.current.strokeStyle=color;
     },[color])
+
 
     useLayoutEffect(()=>{
       const roughCanvas=rough.canvas(canvasRef.current);
@@ -74,13 +92,16 @@ const WhiteBoard = ({canvasRef,ctxRef,elements,setElements,tool,color}) => {
         
       });
 
+      const canvasImage=canvasRef.current.toDataURL();
+      socket.emit("whiteboardData",canvasImage);
+
     },[elements])
 
 
 
 
     const handleMouseDown=(e)=>{
-        console.log("mouse down");
+      //  console.log("mouse down");
        const {offsetX,offsetY}=e.nativeEvent;
 
       if(tool=='pencil'){
@@ -131,7 +152,7 @@ const WhiteBoard = ({canvasRef,ctxRef,elements,setElements,tool,color}) => {
        const {offsetX,offsetY}=e.nativeEvent;
       
        if(isDrawing){   
-         console.log("mouse move")
+        // console.log("mouse move")
           if(tool=='pencil'){
             const {path}=elements[elements.length-1];
             const newPath=[...path,[offsetX,offsetY]];
@@ -192,7 +213,7 @@ const WhiteBoard = ({canvasRef,ctxRef,elements,setElements,tool,color}) => {
        
 
     const handleMouseUp=(e)=>{
-      console.log("mouse up");
+    //  console.log("mouse up");
        setIsDrawing(false);
     }    
 

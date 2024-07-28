@@ -2,7 +2,7 @@ import { useRef, useState } from "react"
 import "./index.css"
 import WhiteBoard from "../../components/Whiteboard/index.jsx";
 
-const RoomPage = () => {
+const RoomPage = ({user,socket}) => {
     const ctxRef=useRef(null);
     const canvasRef=useRef(null);
 
@@ -39,9 +39,12 @@ const RoomPage = () => {
 
   return (
       <div className="row">
+
         <h1 className="text-center py-4">White board sharing app <span className="text-primary">[Users Online:0]</span></h1>
-        
-         <div className="col-md-10 gap-3 mx-auto px-5  mb-3 d-flex align-items-center justify-content-center">
+
+        {
+          user?.presenter &&(
+            <div className="col-md-10 gap-3 mx-auto px-5  mb-3 d-flex align-items-center justify-content-center">
 
             <div className="d-flex col-md-2 justify-content-center gap-1">
 
@@ -92,6 +95,10 @@ const RoomPage = () => {
                 <button className="btn btn-danger" onClick={handleClearCanvas}>Clear Canvas</button>
              </div>
          </div>
+          )
+        }
+        
+        
 
         <div className="col-md-10 mx-auto mt-4 canvas-box">
            
@@ -102,6 +109,8 @@ const RoomPage = () => {
              setElements={setElements} 
              tool={tool}
              color={color}
+             user={user}
+             socket={socket}
             ></WhiteBoard>
 
         </div>

@@ -18,6 +18,7 @@ const connectionOptions={
 }
 
 const socket=io(server,connectionOptions);
+console.log("socket",socket);
 
 function App() {
   const [user,setUser]=useState(null);
@@ -38,7 +39,7 @@ function App() {
       
       <Routes>
         <Route path='/' element={<Forms socket={socket} setUser={setUser}/>}></Route>
-        <Route path='/:roomId' element={<RoomPage/>}></Route>
+        <Route path='/:roomId' element={<RoomPage  user={user} socket={socket}/>}></Route>
       </Routes>
 
      </div>
