@@ -19,7 +19,6 @@ const WhiteBoard = ({canvasRef,ctxRef,elements,setElements,tool,color,user,socke
    if(!user?.presenter){
       return (
          <div className='border border-dark border-3 h-100 w-100 overflow-hidden'>
-<<<<<<< HEAD
             <img 
             src={img} 
             alt="Realtime white board image shared by presenter" 
@@ -28,9 +27,6 @@ const WhiteBoard = ({canvasRef,ctxRef,elements,setElements,tool,color,user,socke
                width:"285%"
             }}
             />
-=======
-            <img src={img} alt="Realtime white board image shared by presenter" className='w-100 h-100'/>
->>>>>>> 672d10268fc10f7cac748ae7e1d97116ead4f00b
          </div>
       )
    }
