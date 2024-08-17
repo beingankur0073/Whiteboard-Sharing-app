@@ -1,6 +1,7 @@
 import express from 'express'
 import http from 'http';
 import { Server} from 'socket.io';
+import { addUser } from './utils/users.js';
 
 const app=express();
 
@@ -23,7 +24,9 @@ io.on("connection",(socket)=>{
         const {name,userId,roomId,host,presenter}=data;
         roomIdGlobal=roomId;
         socket.join(roomId);
-        socket.emit("userIsJoined",{success:true})
+        const users=addUser(data);
+        socket.emit("userIsJoined",{success:true,users});
+        socket.broadcast.to(roomId).emit("allUsers",users);
         socket.broadcast.to(roomId).emit("whiteBoardDataResponse",{
             imgURL:imgURLGlobal,
         })
